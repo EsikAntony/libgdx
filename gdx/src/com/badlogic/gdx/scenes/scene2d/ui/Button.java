@@ -214,12 +214,38 @@ public class Button extends Table implements Disableable {
 		for (int i = 0; i < children.size; i++)
 			children.get(i).moveBy(-offsetX, -offsetY);
 
+        drawBorder(batch);
+
 		Stage stage = getStage();
 		if (stage != null && stage.getActionsRequestRendering() && isPressed != clickListener.isPressed())
 			Gdx.graphics.requestRendering();
 	}
 
-	public float getPrefWidth () {
+    protected void drawBorder(Batch batch) {
+        if(style.borderWidth > 0
+                && style.border != null) {
+            // left
+            float x = getX();
+            float y = getY();
+            style.border.draw(batch, x, y, style.borderWidth, getHeight());
+            // top
+            x = getX();
+            y = getY() + getHeight() - style.borderWidth;
+            style.border.draw(batch, x, y, getWidth(), style.borderWidth);
+            // right
+            x = getX() + getWidth() - style.borderWidth;
+            y = getY();
+            style.border.draw(batch, x, y, style.borderWidth, getHeight());
+            // bottom
+            x = getX();
+            y = getY();
+            style.border.draw(batch, x, y, getWidth(), style.borderWidth);
+        } else if(style.border == null) {
+            throw new NullPointerException("ButtonStyle.border must not be null");
+        }
+    }
+
+    public float getPrefWidth () {
 		float width = super.getPrefWidth();
 		if (style.up != null) width = Math.max(width, style.up.getMinWidth());
 		if (style.down != null) width = Math.max(width, style.down.getMinWidth());
@@ -247,9 +273,9 @@ public class Button extends Table implements Disableable {
 	 * @author mzechner */
 	static public class ButtonStyle {
 		/** Optional. */
-		public Drawable up, down, over, checked, checkedOver, disabled;
+		public Drawable up, down, over, checked, checkedOver, disabled, border;
 		/** Optional. */
-		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY;
+		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY, borderWidth;
 
 		public ButtonStyle () {
 		}
@@ -267,10 +293,12 @@ public class Button extends Table implements Disableable {
 			this.checked = style.checked;
 			this.checkedOver = style.checkedOver;
 			this.disabled = style.disabled;
+			this.border = style.border;
 			this.pressedOffsetX = style.pressedOffsetX;
 			this.pressedOffsetY = style.pressedOffsetY;
 			this.unpressedOffsetX = style.unpressedOffsetX;
 			this.unpressedOffsetY = style.unpressedOffsetY;
+            this.borderWidth = style.borderWidth;
 		}
 	}
 }
