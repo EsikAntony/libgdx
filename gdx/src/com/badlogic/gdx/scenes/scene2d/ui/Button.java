@@ -240,8 +240,6 @@ public class Button extends Table implements Disableable {
             x = getX();
             y = getY();
             style.border.draw(batch, x, y, getWidth(), style.borderWidth);
-        } else if(style.border == null) {
-            throw new NullPointerException("ButtonStyle.border must not be null");
         }
     }
 
